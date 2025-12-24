@@ -1,0 +1,38 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+  gocyclo:
+    min-complexity: 15
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck      # 检查未处理的错误
+    - gosimple      # 简化代码建议
+    - govet         # Go vet 检查
+    - ineffassign   # 检测无效的赋值
+    - staticcheck   # 静态分析
+    - unused        # 检查未使用的常量、变量、函数等
+    - typecheck     # 类型检查
+    - gofmt         # 检查代码格式
+    - gocyclo       # 检查函数复杂度
+    - goconst       # 检查可以提取为常量的字符串
+    - misspell      # 拼写检查
+
+issues:
+  exclude-rules:
+    # 排除测试文件的某些检查
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+
+run:
+  timeout: 5m
+  tests: true

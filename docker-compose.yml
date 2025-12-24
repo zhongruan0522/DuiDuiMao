@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  duiDuimao:
+    image: ghcr.io/zhongruan/duiDuimao:latest
+    container_name: duiDuimao
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: duiDuimao-db
+    environment:
+      - POSTGRES_USER=duiDuimao
+      - POSTGRES_PASSWORD=duiDuimao_password
+      - POSTGRES_DB=duiDuimao
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:

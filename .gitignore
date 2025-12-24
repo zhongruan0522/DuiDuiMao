@@ -107,6 +107,7 @@ pnpm-debug.log*
 
 tmp/
 temp/
+Temp/                    # 开发模式 CSV 数据存储
 *.tmp
 *.bak
 *.swp
@@ -153,3 +154,10 @@ coverage/
 .claude/
 .codex/
 .gemini/
+
+# ====================
+# 附加
+# ====================
+
+nul
+null

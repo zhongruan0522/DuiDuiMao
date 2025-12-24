@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  duiduimao-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: duiduimao-dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./Temp:/app/Temp
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
