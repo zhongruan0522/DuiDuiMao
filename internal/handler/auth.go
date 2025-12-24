@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zhongruan/DuiDuiMao/internal/config"
-	"github.com/zhongruan/DuiDuiMao/internal/service"
-	"github.com/zhongruan/DuiDuiMao/internal/util"
+	"github.com/zhongruan0522/DuiDuiMao/internal/config"
+	"github.com/zhongruan0522/DuiDuiMao/internal/service"
+	"github.com/zhongruan0522/DuiDuiMao/internal/util"
 )
 
 // AuthHandler 认证处理器
@@ -53,8 +53,8 @@ func (h *AuthHandler) AdminLogin(c *gin.Context) {
 		return
 	}
 
-	password, err := util.DoubleDecode(req.Password)
-	if err != nil {
+	password, errPass := util.DoubleDecode(req.Password)
+	if errPass != nil {
 		util.ErrorResponse(c, 400, "密码解密失败")
 		return
 	}
@@ -191,7 +191,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 // generateState 生成随机state
 func (h *AuthHandler) generateState() string {
 	b := make([]byte, 16)
-	rand.Read(b)
+	_, _ = rand.Read(b) // rand.Read 总是返回 len(b), nil
 	return base64.URLEncoding.EncodeToString(b)
 }
 

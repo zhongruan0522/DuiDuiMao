@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+const testString = "这是一个测试字符串用于基准测试"
+
 func TestDoubleEncode(t *testing.T) {
 	tests := []struct {
 		name  string
@@ -119,15 +121,13 @@ func TestDoubleDecodeInvalidInput(t *testing.T) {
 
 // 基准测试
 func BenchmarkDoubleEncode(b *testing.B) {
-	testData := "这是一个测试字符串用于基准测试"
 	for i := 0; i < b.N; i++ {
-		DoubleEncode(testData)
+		DoubleEncode(testString)
 	}
 }
 
 func BenchmarkDoubleDecode(b *testing.B) {
-	testData := "这是一个测试字符串用于基准测试"
-	encoded := DoubleEncode(testData)
+	encoded := DoubleEncode(testString)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		DoubleDecode(encoded)

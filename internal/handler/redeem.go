@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zhongruan/DuiDuiMao/internal/util"
+	"github.com/zhongruan0522/DuiDuiMao/internal/util"
 )
 
 // RedeemHandler 兑换处理器
@@ -20,9 +20,9 @@ func (h *RedeemHandler) Redeem(c *gin.Context) {
 	tierID := c.Param("tier_id")
 
 	util.SuccessResponse(c, gin.H{
-		"message":    "兑换成功（Mock数据）",
-		"tier_id":    tierID,
-		"cdk_code":   "MOCK-CDK-CODE-12345",
+		"message":     "兑换成功（Mock数据）",
+		"tier_id":     tierID,
+		"cdk_code":    "MOCK-CDK-CODE-12345",
 		"redeemed_at": time.Now(),
 	})
 }

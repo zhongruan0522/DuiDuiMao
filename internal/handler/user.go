@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zhongruan/DuiDuiMao/internal/util"
+	"github.com/zhongruan0522/DuiDuiMao/internal/util"
 )
 
 // UserHandler 用户处理器

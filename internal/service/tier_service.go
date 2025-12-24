@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/zhongruan/DuiDuiMao/internal/model"
+	"github.com/zhongruan0522/DuiDuiMao/internal/config"
+	"github.com/zhongruan0522/DuiDuiMao/internal/model"
 )
 
 // TierService 档位服务
@@ -25,7 +26,7 @@ const cdkCSVPath = "Temp/cdk.csv" // CDK CSV文件路径
 
 // countAvailableCDKs 统计指定档位下可用的CDK数量
 func (s *TierService) countAvailableCDKs(tierID int) int {
-	if s.mode != "dev" {
+	if s.mode != config.ModeDev {
 		// TODO: 数据库模式实现
 		return 0
 	}
@@ -65,7 +66,7 @@ func (s *TierService) countAvailableCDKs(tierID int) int {
 
 // GetAllTiers 获取所有档位
 func (s *TierService) GetAllTiers() ([]model.Tier, error) {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.readTiersCSV()
 	}
 	// TODO: 实现数据库版本
@@ -105,7 +106,7 @@ func (s *TierService) GetTierByID(id int) (*model.Tier, error) {
 
 // CreateTier 创建档位（库存自动计算，无需传入）
 func (s *TierService) CreateTier(name string, quota, requiredLevel, dailyLimit, sortOrder int, isActive bool) (*model.Tier, error) {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.createTierCSV(name, quota, requiredLevel, dailyLimit, sortOrder, isActive)
 	}
 	// TODO: 实现数据库版本
@@ -114,7 +115,7 @@ func (s *TierService) CreateTier(name string, quota, requiredLevel, dailyLimit, 
 
 // UpdateTier 更新档位（库存自动计算，无需传入）
 func (s *TierService) UpdateTier(id int, name string, quota, requiredLevel, dailyLimit, sortOrder int, isActive bool) (*model.Tier, error) {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.updateTierCSV(id, name, quota, requiredLevel, dailyLimit, sortOrder, isActive)
 	}
 	// TODO: 实现数据库版本
@@ -123,7 +124,7 @@ func (s *TierService) UpdateTier(id int, name string, quota, requiredLevel, dail
 
 // DeleteTier 删除档位
 func (s *TierService) DeleteTier(id int) error {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.deleteTierCSV(id)
 	}
 	// TODO: 实现数据库版本
@@ -132,7 +133,7 @@ func (s *TierService) DeleteTier(id int) error {
 
 // UpdateStock 更新库存
 func (s *TierService) UpdateStock(id int, delta int) error {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.updateStockCSV(id, delta)
 	}
 	// TODO: 实现数据库版本

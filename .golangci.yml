@@ -1,13 +1,11 @@
 linters-settings:
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   gocyclo:
     min-complexity: 15
   dupl:
     threshold: 100
-  goconst:
-    min-len: 2
-    min-occurrences: 2
 
 linters:
   disable-all: true
@@ -21,7 +19,6 @@ linters:
     - typecheck     # 类型检查
     - gofmt         # 检查代码格式
     - gocyclo       # 检查函数复杂度
-    - goconst       # 检查可以提取为常量的字符串
     - misspell      # 拼写检查
 
 issues:

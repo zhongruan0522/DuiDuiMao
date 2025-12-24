@@ -1,4 +1,4 @@
-module github.com/zhongruan/DuiDuiMao
+module github.com/zhongruan0522/DuiDuiMao
 
 go 1.21
 

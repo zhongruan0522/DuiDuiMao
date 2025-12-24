@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/zhongruan/DuiDuiMao/internal/model"
+	"github.com/zhongruan0522/DuiDuiMao/internal/config"
+	"github.com/zhongruan0522/DuiDuiMao/internal/model"
 )
 
 // UserService 用户服务
@@ -23,7 +24,7 @@ func NewUserService(mode string) *UserService {
 
 // CreateOrUpdateUser 创建或更新用户（OAuth登录后调用）
 func (s *UserService) CreateOrUpdateUser(linuxDoID int, username, name string, trustLevel int, isAdmin bool) (*model.User, error) {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.createOrUpdateUserCSV(linuxDoID, username, name, trustLevel, isAdmin)
 	}
 	// TODO: 实现数据库版本
@@ -32,7 +33,7 @@ func (s *UserService) CreateOrUpdateUser(linuxDoID int, username, name string, t
 
 // GetUserByLinuxDoID 根据LinuxDo ID获取用户
 func (s *UserService) GetUserByLinuxDoID(linuxDoID int) (*model.User, error) {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.getUserByLinuxDoIDCSV(linuxDoID)
 	}
 	// TODO: 实现数据库版本
@@ -41,7 +42,7 @@ func (s *UserService) GetUserByLinuxDoID(linuxDoID int) (*model.User, error) {
 
 // GetUserByID 根据ID获取用户
 func (s *UserService) GetUserByID(id int) (*model.User, error) {
-	if s.mode == "dev" {
+	if s.mode == config.ModeDev {
 		return s.getUserByIDCSV(id)
 	}
 	// TODO: 实现数据库版本

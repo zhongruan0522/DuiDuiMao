@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zhongruan/DuiDuiMao/internal/util"
+	"github.com/zhongruan0522/DuiDuiMao/internal/util"
 )
 
 // AdminMiddleware 管理员权限中间件（需要先经过AuthMiddleware）

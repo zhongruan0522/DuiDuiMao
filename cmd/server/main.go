@@ -5,11 +5,11 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zhongruan/DuiDuiMao/internal/config"
-	"github.com/zhongruan/DuiDuiMao/internal/handler"
-	"github.com/zhongruan/DuiDuiMao/internal/middleware"
-	"github.com/zhongruan/DuiDuiMao/internal/service"
-	"github.com/zhongruan/DuiDuiMao/internal/util"
+	"github.com/zhongruan0522/DuiDuiMao/internal/config"
+	"github.com/zhongruan0522/DuiDuiMao/internal/handler"
+	"github.com/zhongruan0522/DuiDuiMao/internal/middleware"
+	"github.com/zhongruan0522/DuiDuiMao/internal/service"
+	"github.com/zhongruan0522/DuiDuiMao/internal/util"
 )
 
 func main() {

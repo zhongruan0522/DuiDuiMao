@@ -4,9 +4,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zhongruan/DuiDuiMao/internal/config"
-	"github.com/zhongruan/DuiDuiMao/internal/service"
-	"github.com/zhongruan/DuiDuiMao/internal/util"
+	"github.com/zhongruan0522/DuiDuiMao/internal/config"
+	"github.com/zhongruan0522/DuiDuiMao/internal/service"
+	"github.com/zhongruan0522/DuiDuiMao/internal/util"
 )
 
 // AdminHandler 管理端处理器
@@ -209,8 +209,8 @@ func (h *AdminHandler) GetSettings(c *gin.Context) {
 
 // UpdateSettingsRequest 更新系统设置请求（前端需要加密传输）
 type UpdateSettingsRequest struct {
-	GlobalEnabled      string `json:"global_enabled"`      // 双重Base64加密的布尔值
-	Announcement       string `json:"announcement"`        // 双重Base64加密的公告内容
+	GlobalEnabled      string `json:"global_enabled"`       // 双重Base64加密的布尔值
+	Announcement       string `json:"announcement"`         // 双重Base64加密的公告内容
 	OrderExpireMinutes string `json:"order_expire_minutes"` // 双重Base64加密的超时时间
 }
 

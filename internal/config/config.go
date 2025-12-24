@@ -8,6 +8,12 @@ import (
 	"sync"
 )
 
+// 运行模式常量
+const (
+	ModeDev    = "dev"    // 开发模式
+	ModeServer = "server" // 服务器模式
+)
+
 // Config 应用配置结构
 type Config struct {
 	Server   ServerConfig
@@ -34,10 +40,10 @@ type OAuthConfig struct {
 
 // PayConfig 支付配置
 type PayConfig struct {
-	ClientID    string
+	ClientID     string
 	ClientSecret string
-	CallbackURL string
-	NotifyURL   string
+	CallbackURL  string
+	NotifyURL    string
 }
 
 // AdminConfig 管理员配置
@@ -113,7 +119,7 @@ func loadFromFile() (*Config, error) {
 
 	// 解析配置
 	cfg.Server.Port, _ = strconv.Atoi(getConfigValue(configMap, "port", "3001"))
-	cfg.Server.Mode = getConfigValue(configMap, "mode", "dev")
+	cfg.Server.Mode = getConfigValue(configMap, "mode", ModeDev)
 
 	cfg.OAuth.AppClientID = getConfigValue(configMap, "app_client_id", "")
 	cfg.OAuth.AppClientSecret = getConfigValue(configMap, "app_client_secret", "")
