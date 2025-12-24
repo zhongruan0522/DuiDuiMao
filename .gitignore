@@ -1,0 +1,155 @@
+# ====================
+# Go 后端
+# ====================
+
+# Go 二进制文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
+/usr/bin/
+
+# Go 测试和覆盖率
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# Go 依赖（若使用 go mod 则不需要屏蔽 vendor）
+# vendor/
+
+# Go 工具生成的文件
+go.work
+go.work.sum
+
+# ====================
+# Vue 前端
+# ====================
+
+# 依赖目录
+node_modules/
+jspm_packages/
+
+# 前端构建产物
+web/dist/
+web/.vite-cache/
+web/.turbo/
+
+# 环境配置文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# pnpm
+.pnpm-store/
+
+# ====================
+# 配置文件（保留 example）
+# ====================
+
+config.yaml
+config.local.yaml
+*.secret.yaml
+
+# ====================
+# IDE 配置
+# ====================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+.project
+.classpath
+.settings/
+
+# JetBrains Rider
+.idea/
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ====================
+# 系统文件
+# ====================
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ====================
+# 日志文件
+# ====================
+
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ====================
+# 临时文件
+# ====================
+
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# ====================
+# Docker
+# ====================
+
+# 本地 Docker 覆盖配置（保留源文件）
+docker-compose.override.yml
+
+# ====================
+# 操作系统
+# ====================
+
+# Windows
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ====================
+# 测试覆盖率
+# ====================
+
+coverage/
+.nyc_output/
+*.lcov
+
+# ====================
+# AI CLI/IDE 本地配置
+# ====================
+
+.claude/
+.codex/
+.gemini/
