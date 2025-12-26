@@ -99,7 +99,8 @@ func main() {
 	log.Printf("📍 监听地址: http://localhost%s", addr)
 	log.Printf("🎯 运行模式: %s", cfg.Server.Mode)
 
-	if err := r.Run(addr); err != nil {
+	err = r.Run(addr)
+	if err != nil {
 		log.Fatalf("服务启动失败: %v", err)
 	}
 }

@@ -53,8 +53,8 @@ func (h *AuthHandler) AdminLogin(c *gin.Context) {
 		return
 	}
 
-	password, errPass := util.DoubleDecode(req.Password)
-	if errPass != nil {
+	password, err := util.DoubleDecode(req.Password)
+	if err != nil {
 		util.ErrorResponse(c, 400, "密码解密失败")
 		return
 	}
