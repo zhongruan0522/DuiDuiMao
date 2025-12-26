@@ -151,18 +151,19 @@ func (s *TierService) ensureTierCSV() error {
 		return err
 	}
 
-	if _, err := os.Stat(tierCSVPath); os.IsNotExist(err) {
-		file, err := os.Create(tierCSVPath)
-		if err != nil {
-			return err
+	_, statErr := os.Stat(tierCSVPath)
+	if os.IsNotExist(statErr) {
+		file, createErr := os.Create(tierCSVPath)
+		if createErr != nil {
+			return createErr
 		}
 		defer file.Close()
 
 		writer := csv.NewWriter(file)
 		// 写入CSV头部
 		header := []string{"id", "name", "quota", "required_level", "daily_limit", "stock", "is_active", "sort_order", "created_at", "updated_at"}
-		if err := writer.Write(header); err != nil {
-			return err
+		if writeErr := writer.Write(header); writeErr != nil {
+			return writeErr
 		}
 		writer.Flush()
 	}

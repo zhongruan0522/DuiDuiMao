@@ -233,7 +233,8 @@ func UpdateSettings(req UpdateSettingsRequest) error {
 	}
 	newContent := strings.Join(newLines, ",\n")
 
-	if err := os.WriteFile("config.yaml", []byte(newContent), 0644); err != nil {
+	err = os.WriteFile("config.yaml", []byte(newContent), 0644)
+	if err != nil {
 		return fmt.Errorf("写入配置文件失败: %v", err)
 	}
 
