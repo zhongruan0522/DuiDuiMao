@@ -11,13 +11,17 @@ import (
 
 // AdminHandler 管理端处理器
 type AdminHandler struct {
-	tierService *service.TierService
+	tierService      *service.TierService
+	cdkService       *service.CDKService
+	redeemLogService *service.RedeemLogService
 }
 
 // NewAdminHandler 创建管理端处理器
-func NewAdminHandler(tierService *service.TierService) *AdminHandler {
+func NewAdminHandler(tierService *service.TierService, cdkService *service.CDKService, redeemLogService *service.RedeemLogService) *AdminHandler {
 	return &AdminHandler{
-		tierService: tierService,
+		tierService:      tierService,
+		cdkService:       cdkService,
+		redeemLogService: redeemLogService,
 	}
 }
 
@@ -100,7 +104,7 @@ func (h *AdminHandler) UpdateTier(c *gin.Context) {
 	}
 
 	var req TierRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err = c.ShouldBindJSON(&req); err != nil {
 		util.ErrorResponse(c, 400, "参数错误: "+err.Error())
 		return
 	}
@@ -146,34 +150,155 @@ func (h *AdminHandler) DeleteTier(c *gin.Context) {
 	})
 }
 
-// ========== CDK管理（Mock，待后续实现） ==========
+// ========== CDK管理 ==========
 
-// ImportCDKs 批量导入CDK（Mock）
+// ImportCDKsRequest 批量导入CDK请求
+type ImportCDKsRequest struct {
+	TierID string   `json:"tier_id" binding:"required"` // 双重Base64加密的档位ID
+	Codes  []string `json:"codes" binding:"required"`   // CDK列表（明文，服务层会加密）
+}
+
+// ImportCDKs 批量导入CDK
 func (h *AdminHandler) ImportCDKs(c *gin.Context) {
+	var req ImportCDKsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		util.ErrorResponse(c, 400, "参数错误: "+err.Error())
+		return
+	}
+
+	// 解密档位ID
+	tierIDStr, err := util.DoubleDecode(req.TierID)
+	if err != nil {
+		util.ErrorResponse(c, 400, "档位ID解密失败")
+		return
+	}
+	tierID, err := strconv.Atoi(tierIDStr)
+	if err != nil {
+		util.ErrorResponse(c, 400, "档位ID格式错误")
+		return
+	}
+
+	// 验证档位是否存在
+	tier, err := h.tierService.GetTierByID(tierID)
+	if err != nil {
+		util.ErrorResponse(c, 404, "档位不存在")
+		return
+	}
+
+	// 批量导入CDK
+	result, err := h.cdkService.BatchImportCDKs(tierID, req.Codes)
+	if err != nil {
+		util.ErrorResponse(c, 500, "导入CDK失败: "+err.Error())
+		return
+	}
+
+	// 返回加密后的结果
 	util.SuccessResponse(c, gin.H{
-		"message": "CDK导入成功（Mock）",
-		"count":   util.DoubleEncode("100"),
+		"message":       "CDK导入完成",
+		"tier_id":       util.DoubleEncode(strconv.Itoa(tier.ID)),
+		"tier_name":     util.DoubleEncode(tier.Name),
+		"success_count": util.DoubleEncode(strconv.Itoa(result.SuccessCount)),
+		"failed_count":  util.DoubleEncode(strconv.Itoa(result.FailedCount)),
 	})
 }
 
-// GetCDKs 获取CDK列表（Mock）
+// GetCDKs 获取CDK列表
 func (h *AdminHandler) GetCDKs(c *gin.Context) {
-	util.SuccessResponse(c, []gin.H{
-		{
-			"id":      util.DoubleEncode("1"),
-			"tier_id": util.DoubleEncode("1"),
-			"code":    util.DoubleEncode("MOCK-CODE-001"),
-			"status":  util.DoubleEncode("0"),
-		},
-	})
+	// 解析查询参数
+	var tierID *int
+	var status *int
+
+	if tierIDStr := c.Query("tier_id"); tierIDStr != "" {
+		// 解密档位ID
+		decryptedTierID, err := util.DoubleDecode(tierIDStr)
+		if err != nil {
+			util.ErrorResponse(c, 400, "档位ID解密失败")
+			return
+		}
+		tid, err := strconv.Atoi(decryptedTierID)
+		if err != nil {
+			util.ErrorResponse(c, 400, "档位ID格式错误")
+			return
+		}
+		tierID = &tid
+	}
+
+	if statusStr := c.Query("status"); statusStr != "" {
+		// 解密状态
+		decryptedStatus, err := util.DoubleDecode(statusStr)
+		if err != nil {
+			util.ErrorResponse(c, 400, "状态解密失败")
+			return
+		}
+		s, err := strconv.Atoi(decryptedStatus)
+		if err != nil {
+			util.ErrorResponse(c, 400, "状态格式错误")
+			return
+		}
+		status = &s
+	}
+
+	// 获取CDK列表
+	cdks, err := h.cdkService.GetCDKs(tierID, status)
+	if err != nil {
+		util.ErrorResponse(c, 500, "获取CDK列表失败: "+err.Error())
+		return
+	}
+
+	// 获取兑换记录（用于显示兑换用户）
+	redeemLogs, _ := h.redeemLogService.GetAllRedeemLogs()
+	cdkToLog := make(map[int]int) // cdk_id -> user_id
+	for _, log := range redeemLogs {
+		cdkToLog[log.CDKID] = log.UserID
+	}
+
+	// 对数据进行双重Base64加密
+	encryptedData := []gin.H{}
+	for _, cdk := range cdks {
+		redeemedBy := cdk.RedeemedBy
+		if redeemedBy == 0 {
+			// 如果CDK表中没有记录，尝试从兑换记录中获取
+			if userID, ok := cdkToLog[cdk.ID]; ok {
+				redeemedBy = userID
+			}
+		}
+
+		redeemedAtStr := ""
+		if !cdk.RedeemedAt.IsZero() {
+			redeemedAtStr = cdk.RedeemedAt.Format("2006-01-02 15:04:05")
+		}
+
+		encryptedData = append(encryptedData, gin.H{
+			"id":          util.DoubleEncode(strconv.Itoa(cdk.ID)),
+			"tier_id":     util.DoubleEncode(strconv.Itoa(cdk.TierID)),
+			"code":        cdk.Code, // 已经是加密的
+			"status":      util.DoubleEncode(strconv.Itoa(cdk.Status)),
+			"redeemed_by": util.DoubleEncode(strconv.Itoa(redeemedBy)),
+			"redeemed_at": util.DoubleEncode(redeemedAtStr),
+			"created_at":  util.DoubleEncode(cdk.CreatedAt.Format("2006-01-02 15:04:05")),
+		})
+	}
+
+	util.SuccessResponse(c, encryptedData)
 }
 
-// RevokeCDK 作废CDK（Mock）
+// RevokeCDK 作废CDK
 func (h *AdminHandler) RevokeCDK(c *gin.Context) {
-	id := c.Param("id")
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		util.ErrorResponse(c, 400, "无效的CDK ID")
+		return
+	}
+
+	if err := h.cdkService.RevokeCDK(id); err != nil {
+		util.ErrorResponse(c, 500, "作废CDK失败: "+err.Error())
+		return
+	}
+
 	util.SuccessResponse(c, gin.H{
-		"message": "CDK作废成功（Mock）",
-		"id":      util.DoubleEncode(id),
+		"message": "CDK作废成功",
+		"id":      util.DoubleEncode(strconv.Itoa(id)),
 	})
 }
 

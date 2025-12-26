@@ -22,8 +22,6 @@ func NewTierService(mode string) *TierService {
 	return &TierService{mode: mode}
 }
 
-const cdkCSVPath = "Temp/cdk.csv" // CDK CSV文件路径
-
 // countAvailableCDKs 统计指定档位下可用的CDK数量
 func (s *TierService) countAvailableCDKs(tierID int) int {
 	if s.mode != config.ModeDev {

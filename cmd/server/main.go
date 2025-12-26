@@ -28,12 +28,14 @@ func main() {
 	// 创建服务层
 	userService := service.NewUserService(cfg.Server.Mode)
 	tierService := service.NewTierService(cfg.Server.Mode)
+	cdkService := service.NewCDKService(cfg.Server.Mode)
+	redeemLogService := service.NewRedeemLogService(cfg.Server.Mode)
 
 	// 创建处理器
 	authHandler := handler.NewAuthHandler(cfg, userService)
 	userHandler := handler.NewUserHandler()
-	redeemHandler := handler.NewRedeemHandler()
-	adminHandler := handler.NewAdminHandler(tierService)
+	redeemHandler := handler.NewRedeemHandler(tierService, cdkService, redeemLogService)
+	adminHandler := handler.NewAdminHandler(tierService, cdkService, redeemLogService)
 
 	// ========== 用户端接口 ==========
 	api := r.Group("/api")
